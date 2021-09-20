@@ -2,11 +2,11 @@
  * Data Structures
  */
 class Suit {
-    static CLUBS = 0
-    static DIAMONDS = 1
-    static HEARTS = 2
-    static SPADES = 3
-    static symbols = {0: '♣', 1: '♦', 2: '♥', 3: '♠'}
+    static CLUBS = 1
+    static DIAMONDS = 2
+    static HEARTS = 3
+    static SPADES = 4
+    static symbols = {1: '♣', 2: '♦', 3: '♥', 4: '♠'}
 
     static toSymbol(value) {
         return this.symbols[value]
@@ -67,9 +67,9 @@ const ONE_PAIR_VALUE = 1000
 /**
  * Poker Checker Functions
  */
-const isRoyalFlush = (hand) => isStraightFlush(hand) && hand[4].pip === Pip.ACE
+const isRoyalFlush = (hand) => isStraightFlush(hand) && hand[4].pip === Pip.ACE ? hand[4] : false
 
-const isStraightFlush = (hand) => isStraight(hand) && isFlush(hand)
+const isStraightFlush = (hand) => isStraight(hand) && isFlush(hand) ? hand[4] : false
 
 const isFlush = (hand) => {
     validateHand(hand)
@@ -79,7 +79,7 @@ const isFlush = (hand) => {
 
     hand = sortBySuite(hand)
 
-    return hand[0].suit === hand[4].suit
+    return hand[0].suit === hand[4].suit ? hand[4] : false
 }
 
 const isStraight = (hand) => {
@@ -93,11 +93,11 @@ const isStraight = (hand) => {
 
     if (handPips[4] === Pip.ACE) {
         return areEqual(handPips, [Pip.DEUCE, Pip.TREY, Pip.FOUR, Pip.FIVE, Pip.ACE]) ||
-            areEqual(handPips, [Pip.TEN, Pip.JACK, Pip.QUEEN, Pip.KING, Pip.ACE])
+            areEqual(handPips, [Pip.TEN, Pip.JACK, Pip.QUEEN, Pip.KING, Pip.ACE]) ? hand[4] : false
     } else {
         const SUM_OF_FIVE_CONSECUTIVE_NUMBERS = 10
         const firstPip = hand[0].pip
-        return hand.reduce((sum, card) => sum + (card.pip - firstPip), 0) === SUM_OF_FIVE_CONSECUTIVE_NUMBERS
+        return hand.reduce((sum, card) => sum + (card.pip - firstPip), 0) === SUM_OF_FIVE_CONSECUTIVE_NUMBERS ? hand[4] : false
     }
 }
 
@@ -107,9 +107,17 @@ const isFours = (hand) => {
         return false
     }
 
-    const handPips = sortByPip(hand).map((card) => card.pip)
+    const handPips = sortByPipAndSuite(hand).map((card) => card.pip)
 
-    return areSame(handPips.slice(0, 4)) || areSame(handPips.slice(1, 5))
+    if (areSame(handPips.slice(0, 4))) {
+        return handPips[3]
+    }
+
+    if (areSame(handPips.slice(1, 5))) {
+        return handPips[4]
+    }
+
+    return false
 }
 
 const isFullHouse = (hand) => {
@@ -118,10 +126,17 @@ const isFullHouse = (hand) => {
         return false
     }
 
-    const pips = sortByPip(hand).map((card) => card.pip)
+    const pips = sortByPipAndSuite(hand).map((card) => card.pip)
 
-    return areSame(pips.slice(0, 3)) && areSame(pips.slice(3, 5)) ||
-        areSame(pips.slice(0, 2)) && areSame(pips.slice(2, 5))
+    if (areSame(pips.slice(0, 3)) && areSame(pips.slice(3, 5))) {
+        return hand[2]
+    }
+
+    if (areSame(pips.slice(0, 2)) && areSame(pips.slice(2, 5))) {
+        return hand[4]
+    }
+
+    return false
 }
 
 const isThrees = (hand) => {
@@ -130,9 +145,18 @@ const isThrees = (hand) => {
         return false
     }
 
-    const pips = sortByPip(hand).map((card) => card.pip)
+    const pips = sortByPipAndSuite(hand).map((card) => card.pip)
+    if (areSame(pips.slice(0, 3))) {
+        return hand[2]
+    }
+    if (areSame(pips.slice(1, 4))) {
+        return hand[3]
+    }
+    if (areSame(pips.slice(2, 5))) {
+        return hand [4]
+    }
 
-    return areSame(pips.slice(0, 3)) || areSame(pips.slice(1, 4)) || areSame(pips.slice(2, 5))
+    return false
 }
 
 const isTwoPairs = (hand) => {
@@ -141,10 +165,17 @@ const isTwoPairs = (hand) => {
         return false
     }
 
-    const pips = sortByPip(hand).map((card) => card.pip)
-    return areSame(pips.slice(0, 2)) && areSame(pips.slice(2, 4)) ||
-        areSame(pips.slice(0, 2)) && areSame(pips.slice(3, 5)) ||
-        areSame(pips.slice(1, 3)) && areSame(pips.slice(3, 5))
+    const pips = sortByPipAndSuite(hand).map((card) => card.pip)
+    if (areSame(pips.slice(0, 2)) && areSame(pips.slice(2, 4))) {
+        return hand[3]
+    }
+    if (areSame(pips.slice(0, 2)) && areSame(pips.slice(3, 5))) {
+        return hand[4]
+    }
+    if (areSame(pips.slice(1, 3)) && areSame(pips.slice(3, 5))) {
+        return hand[4]
+    }
+    return false
 }
 
 const isOnePair = (hand) => {
@@ -153,9 +184,22 @@ const isOnePair = (hand) => {
         return false
     }
 
-    const pips = sortByPip(hand).map((card) => card.pip)
-    return areSame(pips.slice(0, 2)) || areSame(pips.slice(1, 3)) ||
-        areSame(pips.slice(2, 4)) || areSame(pips.slice(3, 5))
+    const pips = sortByPipAndSuite(hand).map((card) => card.pip)
+
+    if (areSame(pips.slice(0, 2))) {
+        return hand[1]
+    }
+    if (areSame(pips.slice(1, 3))) {
+        return hand[2]
+    }
+    if (areSame(pips.slice(2, 4))) {
+        return hand[3]
+    }
+    if (areSame(pips.slice(3, 5))) {
+        return hand[4]
+    }
+
+    return false
 }
 
 /**
@@ -188,9 +232,10 @@ const evaluateHand = (hand) => {
         {fn: isOnePair, value: ONE_PAIR_VALUE}
     ]
     for (const functionValue of functionValues) {
-        if (functionValue.fn(hand)) {
+        const pokerHandResult = functionValue.fn(hand)
+        if (pokerHandResult) {
             pokerHand = functionValue.fn.name
-            pokerHandValue += functionValue.value
+            pokerHandValue += functionValue.value * pokerHandResult.pip * pokerHandResult.suit
             break
         }
     }
@@ -802,8 +847,8 @@ console.log('=          ROUND 3        =')
 console.log('===========================')
 evaluateAndPrint(
     [
-        {name: 'Zigi', cards: '8C 8D 8H AS 8S'},
-        {name: 'Dobri', cards: '10S JS QS KS AS'},
-        {name: 'Shade', cards: '10C 8D 10S 7S 10C'}
+        {name: 'Zigi', cards: '2C 4D 6H 8S 10S'},
+        {name: 'Shade', cards: '3C 3D 3S KS KC'},
+        {name: 'Dobri', cards: '2S 2D 2H AS AS'},
     ]
 )
