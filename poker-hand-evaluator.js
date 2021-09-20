@@ -88,16 +88,15 @@ const isStraight = (hand) => {
         return false
     }
 
-    hand = sortByPip(hand)
-    const handPips = hand.map((card) => card.pip)
+    const handPips = sortByPip(hand).map((card) => card.pip)
 
     if (handPips[4] === Pip.ACE) {
         return areEqual(handPips, [Pip.DEUCE, Pip.TREY, Pip.FOUR, Pip.FIVE, Pip.ACE]) ||
             areEqual(handPips, [Pip.TEN, Pip.JACK, Pip.QUEEN, Pip.KING, Pip.ACE]) ? hand[4] : false
     } else {
-        const SUM_OF_FIVE_CONSECUTIVE_NUMBERS = 10
         const firstPip = hand[0].pip
-        return hand.reduce((sum, card) => sum + (card.pip - firstPip), 0) === SUM_OF_FIVE_CONSECUTIVE_NUMBERS ? hand[4] : false
+        const SUM_FIVE_CONSECUTIVE_NUMS = 10
+        return hand.reduce((sum, card) => sum + (card.pip - firstPip), 0) === SUM_FIVE_CONSECUTIVE_NUMS ? hand[4] : false
     }
 }
 
