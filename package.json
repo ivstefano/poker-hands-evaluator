@@ -1,0 +1,25 @@
+{
+  "name": "poker-hands-evaluator",
+  "version": "1.0.0",
+  "description": "Evaluates Poker Hands. Displays The Winner.",
+  "main": "poker-hand-evaluator.js",
+  "type": "module",
+  "scripts": {
+    "start": "node poker-hand-evaluator.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivstefano/poker-hands-evaluator.git"
+  },
+  "keywords": [
+    "poker",
+    "hand",
+    "evaluation"
+  ],
+  "author": "Ivo Stefanov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ivstefano/poker-hands-evaluator/issues"
+  },
+  "homepage": "https://github.com/ivstefano/poker-hands-evaluator#readme"
+}
